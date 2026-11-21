@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document Extractor — KZ/RU/EN</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --warn-bg: rgba(245, 158, 11, 0.14);
+      --warn-border: #f59e0b;
+      --ok: #22c55e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .container { max-width: 1180px; margin: 0 auto; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    h1 { font-size: 20px; margin: 0; }
+    .badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--accent);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .presets { display: flex; flex-wrap: wrap; gap: 6px; }
+    button.preset {
+      background: #0f172a;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 9px;
+      font-size: 11.5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    button.preset:hover { color: var(--text); border-color: var(--accent); }
+    button.preset.active {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+    }
+    textarea {
+      width: 100%;
+      min-height: 300px;
+      background: #0f172a;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      resize: vertical;
+    }
+    textarea:focus { outline: none; border-color: var(--accent); }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    label.checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    button.primary {
+      background: var(--accent);
+      color: #0f172a;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button.primary:hover { background: var(--accent-hover); color: #fff; }
+    button.primary:disabled { opacity: 0.5; cursor: wait; }
+    .warnings {
+      background: var(--warn-bg);
+      border-left: 3px solid var(--warn-border);
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .warnings ul { margin: 4px 0 0 18px; padding: 0; }
+    pre {
+      margin: 0;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12.5px;
+      overflow-x: auto;
+      max-height: 440px;
+    }
+    .conf-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      font-size: 12px;
+    }
+    .conf-item {
+      background: #0f172a;
+      padding: 5px 8px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid var(--border);
+    }
+    .low-conf { color: var(--warn-border); font-weight: 600; }
+    .high-conf { color: var(--ok); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Financial Document Extractor</h1>
+      <span id="healthBadge" class="badge">Проверка режима...</span>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <div style="font-size: 13px; color: var(--muted);">Тестовые сценарии (10 кейсов из датасета):</div>
+        <div class="presets" id="presetsContainer">
+          <button class="preset" data-key="01_invoice" onclick="loadPreset('01_invoice')">01. Счёт (ТЗ)</button>
+          <button class="preset" data-key="02_kp" onclick="loadPreset('02_kp')">02. КП без суммы (ТЗ)</button>
+          <button class="preset" data-key="03_kz_ocr" onclick="loadPreset('03_kz_ocr')">03. KZ + OCR БИН</button>
+          <button class="preset" data-key="04_missing_fields" onclick="loadPreset('04_missing_fields')">04. Акт без БИН/НДС</button>
+          <button class="preset" data-key="05_noisy_ocr" onclick="loadPreset('05_noisy_ocr')">05. Шумный OCR</button>
+          <button class="preset" data-key="06_contradictions" onclick="loadPreset('06_contradictions')">06. Противоречия</button>
+          <button class="preset" data-key="07_usd" onclick="loadPreset('07_usd')">07. Инвойс USD</button>
+          <button class="preset" data-key="08_ip_iin" onclick="loadPreset('08_ip_iin')">08. ИП с ИИН</button>
+          <button class="preset" data-key="09_act_vat16" onclick="loadPreset('09_act_vat16')">09. Акт + НДС 16%</button>
+          <button class="preset" data-key="10_garbage" onclick="loadPreset('10_garbage')">10. Мусорный текст</button>
+        </div>
+
+        <textarea id="docInput" placeholder='Вставьте текст документа как есть — любые кавычки "ТОО", «ЖШС» и переносы строк экранируются автоматически...'></textarea>
+
+        <div class="controls">
+          <label class="checkbox">
+            <input type="checkbox" id="useMock" />
+            Принудительный Mock-режим
+          </label>
+          <button id="submitBtn" class="primary" onclick="parseDoc()">Извлечь данные</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 13px; color: var(--muted);">Результат (DocumentOutput)</span>
+          <span id="latency" style="font-size: 12px; color: var(--muted);"></span>
+        </div>
+
+        <div id="warningsBox" class="warnings" style="display: none;">
+          <strong>Warnings / Guardrails:</strong>
+          <ul id="warningsList"></ul>
+        </div>
+
+        <div id="confGrid" class="conf-grid" style="display: none;"></div>
+
+        <pre id="jsonOutput">// Нажмите «Извлечь данные» для запуска пайплайна</pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PRESETS = {
+      "01_invoice": `ТОО "Алматы Трейд Компани"\nБИН 170340021554\nСчёт на оплату № 1245 от 12.11.2026\n\nНаименование        Кол-во   Цена     Сумма\nБумага А4 80г/м2        50    2 100     105 000\nКартридж HP 85A          3   18 500      55 500\n\nИтого:                                160 500\nНДС 16%:                               25 680\nВсего к оплате:                       186 180 тенге`,
+
+      "02_kp": `Коммерческое предложение\nот компании «Digital Solutions»\n\nУважаемый клиент! Предлагаем Вам следующие услуги:\n\n- Разработка сайта — 450 000 тг\n- Техподдержка, в месяц — 60 000 тг\n\nПредложение действительно до 30.11.2026.\nСоставлено 05.11.2026.\nС уважением, менеджер Айгуль.`,
+
+      "03_kz_ocr": `ЖШС «Көкжиек Құрылыс» / ТОО "Кокжиек Курылыс"\nБСН/БИН: 2l064090Ol80\nШот-фактура №  AKT-09 / 09 қазан 2026 ж.\nҚызмет көрсету / Оказание услуг - 1 ед. - 340 000\nЖалпы сомасы: Үш жүз қырық мың теңге 00 тиын\nНДС не облагается`,
+
+      "04_missing_fields": `АКТ ВЫПОЛНЕННЫХ РАБОТ № 48-Б\nИсполнитель: ИП "Сулейменов К.Т."\nЗаказчик: ТОО "КазИнвест"\n\n1. Консультационные услуги по настройке ПО — 150 000 тг.\n2. Обучение персонала — 50 000 тг.\n\nИтого выполнено работ на сумму: 200 000 тенге.\nБез НДС.`,
+
+      "05_noisy_ocr": `--- СКАН ДОКУМЕНТА (OCR) ---\nТ00 «Сарыарка Снаб»   БИН: 1805400O9124\nСчет на 0плату N 77/2 от 19.09.2026 г.\n\nПозиции:\n1) Кабель ВВГнг 3х2.5   100 м   450.00   45 000.00\n2) Автомат выключатель  10 шт  3 200.00  32 000.00\n\nИтого без НДС: 77 000,00\nНДС (16%): 12 320,00\nВсего к оплате: 89 320,00 KZT`,
+
+      "06_contradictions": `ТОО «Астана Логистик Групп»\nБИН 190440015237\nСчёт на оплату № 812 от 10.10.2026 г.\n\nПокупатель: ТОО «Вектор Снаб»\n\n№  Наименование услуги                          Кол-во   Цена       Сумма\n1  Транспортно-экспедиторские услуги (Астана-Алматы)  2   140 000    280 000\n2  Страхование груза                                  1    25 000     25 000\n\nИтого:                                                               305 000\nБез НДС.\nВсего к оплате: 305 000 тенге.\nВсего наименований 2, на сумму Триста пятнадцать тысяч тенге 00 тиын.\n\nДата выписки документа: 15.10.2026 г.\nРуководитель: Сериков А.Б.`,
+
+      "07_usd": `INVOICE № INV-2026-089\nDate: 2026-10-22\n\nSupplier: CloudScale Technologies Inc.\nTax ID / EIN: 84-3920145\nAddress: 548 Market St, San Francisco, CA 94104, USA\n\nBill To: LLP "QazTech Solutions", Astana, Kazakhstan\n\nDescription                          Qty    Unit Price (USD)    Amount (USD)\nDedicated GPU Cluster (A100, 1 mo)     1            2 400.00        2 400.00\nManaged Vector DB Storage (500 GB)     2              150.00          300.00\n\nSubtotal:                                                           2 700.00\nVAT (0% - Export of services):                                          0.00\nTotal Due:                                                         $2,700.00 USD`,
+
+      "08_ip_iin": `Индивидуальный предприниматель «Даулетов А.М.»\nИИН 950618300413\nИИК KZ48601A861004512341 в АО «Народный Банк Казахстана», БИК HSBKKZKX\n\nСчёт на оплату № 17 от 04.11.2026\n\nПлательщик: ТОО «МедЦентр Есиль»\n\n№  Наименование работ / услуг                      Кол-во   Цена      Сумма\n1  Настройка и администрирование локальной сети         1   85 000    85 000\n2  Замена термопасты и чистка рабочих станций           4    5 000    20 000\n\nИтого к оплате: 105 000 KZT\nБез НДС (ИП на упрощённом режиме).`,
+
+      "09_act_vat16": `АКТ ВЫПОЛНЕННЫХ РАБОТ (ОКАЗАННЫХ УСЛУГ) № 314 от 18.11.2026 г.\n\nИсполнитель: ТОО «ТехноСтрой Инжиниринг», БИН 160940008316\nЗаказчик: ТОО «Жетысу Девелопмент», БИН 140240011905\n\n№  Наименование работ (услуг)                      Ед. изм.  Кол-во    Цена        Сумма\n1  Монтаж системы вентиляции в офисном блоке         компл.       1   500 000.00  500 000.00\n2  Пусконаладочные работы оборудования               усл.         1   120 000.00  120 000.00\n\nИтого без НДС: 620 000.00 тенге\nНДС 16%: 99 200.00 тенге\nВсего с учётом НДС: 719 200.00 тенге`,
+
+      "10_garbage": `Привет, коллеги!\n\nНапоминаю, что завтра в 15:00 у нас созвон по итогам спринта.\nПожалуйста, проверьте, чтобы все задачи в Jira были переведены в актуальный статус,\nа доступ к тестовому стенду работал без сбоев.\n\nЕсли кто-то не успевает подключиться вовремя — напишите заранее в общий чат.\n\nХорошего дня,\nАртём`
+    };
+
+    function loadPreset(key) {
+      document.getElementById("docInput").value = PRESETS[key];
+      document.querySelectorAll("button.preset").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.key === key);
+      });
+    }
+
+    async function checkHealth() {
+      try {
+        const res = await fetch("/health");
+        const data = await res.json();
+        document.getElementById("healthBadge").textContent = `Mode: ${data.mode.toUpperCase()} (${data.model})`;
+      } catch {
+        document.getElementById("healthBadge").textContent = "API недоступен";
+      }
+    }
+
+    async function parseDoc() {
+      const btn = document.getElementById("submitBtn");
+      const text = document.getElementById("docInput").value;
+      const useMock = document.getElementById("useMock").checked;
+
+      btn.disabled = true;
+      btn.textContent = "Обработка...";
+      const t0 = performance.now();
+
+      try {
+        const res = await fetch("/parse", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: text, use_mock: useMock })
+        });
+        const data = await res.json();
+        const ms = Math.round(performance.now() - t0);
+
+        document.getElementById("latency").textContent = `${ms} мс`;
+        document.getElementById("jsonOutput").textContent = JSON.stringify(data, null, 2);
+
+        const wBox = document.getElementById("warningsBox");
+        const wList = document.getElementById("warningsList");
+        wList.innerHTML = "";
+        if (data.warnings && data.warnings.length > 0) {
+          data.warnings.forEach(w => {
+            const li = document.createElement("li");
+            li.textContent = w;
+            wList.appendChild(li);
+          });
+          wBox.style.display = "block";
+        } else {
+          wBox.style.display = "none";
+        }
+
+        const cGrid = document.getElementById("confGrid");
+        cGrid.innerHTML = "";
+        if (data.field_confidence) {
+          Object.entries(data.field_confidence).forEach(([field, score]) => {
+            const div = document.createElement("div");
+            div.className = "conf-item";
+            const cls = score < 0.85 ? "low-conf" : "high-conf";
+            div.innerHTML = `<span>${field}</span><span class="${cls}">${score}</span>`;
+            cGrid.appendChild(div);
+          });
+          cGrid.style.display = "grid";
+        }
+      } catch (err) {
+        document.getElementById("jsonOutput").textContent = "Ошибка запроса: " + err;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Извлечь данные";
+      }
+    }
+
+    loadPreset("01_invoice");
+    checkHealth();
+  </script>
+</body>
+</html>

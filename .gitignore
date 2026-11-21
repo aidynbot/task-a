@@ -1,0 +1,36 @@
+# Секреты и локальные переменные окружения (шаблон .env.example остаётся в git)
+.env
+.env.*
+!.env.example
+
+# Виртуальные окружения
+.venv/
+venv/
+env/
+
+# Кэш Python и инструменты сборки
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+
+# Тесты, линтеры и статические анализаторы
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+
+# Результаты локальных прогонов оценки (если eval.py сохраняет отчёты)
+eval_report.json
+eval_results/
+
+# Системные файлы и IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

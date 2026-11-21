@@ -156,7 +156,16 @@ def apply_vat_exempt_guard(
     lower_source = _normalize_whitespace(source_text).lower()
     has_no_vat_marker = any(marker in lower_source for marker in NO_VAT_MARKERS)
 
-    if has_no_vat_marker and result.vat_amount is not None:
+    # «Итого без НДС» описывает базу до налога. Если документ отдельно
+    # приводит положительную сумму НДС, это не освобождение от НДС.
+    explicit_vat_amount = bool(
+        re.search(
+            r"(?:ндс|vat|ққс)\s*(?:\d{1,2}\s*%\s*)?:?\s*\d[\d\s.,]*",
+            lower_source,
+        )
+    )
+
+    if has_no_vat_marker and not explicit_vat_amount and result.vat_amount is not None:
         warnings.append(
             f"В документе указано освобождение от НДС («без НДС» / «ҚҚС-сыз»); значение vat_amount ({result.vat_amount}) сброшено в null"
         )

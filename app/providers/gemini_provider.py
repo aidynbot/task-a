@@ -4,9 +4,7 @@ from google.genai import types
 from google.genai.errors import APIError
 from pydantic import ValidationError
 from tenacity import (
-    before_sleep_log,
     retry,
-    retry_if_exception,
     stop_after_attempt,
     wait_exponential,
 )
@@ -31,18 +29,16 @@ class GeminiProvider:
     def __init__(self, settings: Settings) -> None:
         if not settings.gemini_api_key:
             raise ValueError("GEMINI_API_KEY не задан для инициализации GeminiProvider")
-        self._client = genai.Client(api_key=settings.gemini_api_key)
+        self._client = genai.Client(api_key=settings.gemini_api_key, http_options=types.HttpOptions(api_version="v1beta"))
         self._model = settings.gemini_model
         self._temperature = settings.temperature
 
     @retry(
-        retry=retry_if_exception(_is_retryable_gemini_error),
         stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=1, max=8),
-        before_sleep=before_sleep_log(logger, logging.WARNING),
+        wait=wait_exponential(multiplier=1, min=1, max=4),
         reraise=True,
     )
-    def _call_api(self, user_prompt: str) -> types.GenerateContentResponse:
+    def _call_api(self, user_prompt: str):
         return self._client.models.generate_content(
             model=self._model,
             contents=user_prompt,
@@ -51,7 +47,6 @@ class GeminiProvider:
                 response_mime_type="application/json",
                 response_schema=LLMExtractionResult,
                 temperature=self._temperature,
-                thinking_config=types.ThinkingConfig(thinking_budget=0),
             ),
         )
 
