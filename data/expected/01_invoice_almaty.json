@@ -22,7 +22,7 @@
   "field_confidence": {
     "doc_type": 1.0,
     "supplier_name": 1.0,
-    "supplier_bin": 1.0,
+    "supplier_bin": 0.5,
     "doc_number": 1.0,
     "doc_date": 1.0,
     "currency": 1.0,
@@ -30,5 +30,5 @@
     "vat_amount": 1.0,
     "line_items": 1.0
   },
-  "warnings": []
+  "warnings": ["БИН 170340021554 не прошёл проверку контрольного разряда РК (возможна ошибка OCR)"]
 }
