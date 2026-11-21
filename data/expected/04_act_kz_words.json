@@ -1,0 +1,32 @@
+{
+  "doc_type": "act",
+  "supplier_name": "«Сарыарқа Техно Сервис» ЖШС",
+  "supplier_bin": "180540019281",
+  "doc_number": "48",
+  "doc_date": "2026-08-14",
+  "currency": "KZT",
+  "total_amount": 1250000,
+  "vat_amount": null,
+  "line_items": [
+    {
+      "name": "Ақпараттық жүйені техникалық сүйемелдеу және дерекқорды оңтайландыру қызметтері (2026 жылғы шілде айы үшін)",
+      "qty": null,
+      "price": null
+    }
+  ],
+  "field_confidence": {
+    "doc_type": 1.0,
+    "supplier_name": 1.0,
+    "supplier_bin": 1.0,
+    "doc_number": 1.0,
+    "doc_date": 1.0,
+    "currency": 1.0,
+    "total_amount": 0.9,
+    "vat_amount": 1.0,
+    "line_items": 0.85
+  },
+  "warnings": [
+    "Итоговая сумма извлечена исключительно из текстовой записи прописью («Бір миллион екі жүз елу мың теңге 00 тиын»)",
+    "Указано «ҚҚС-сыз» (без НДС) — сумма НДС отсутствует (null)"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "doc_type": "invoice",
+  "supplier_name": "ЖШС «Көкжиек Құрылыс» / ТОО \"Кокжиек Курылыс\"",
+  "supplier_bin": "210640900180",
+  "doc_number": "AKT-09",
+  "doc_date": "2026-10-09",
+  "currency": "KZT",
+  "total_amount": 340000,
+  "vat_amount": null,
+  "line_items": [
+    {
+      "name": "Қызмет көрсету / Оказание услуг",
+      "qty": 1,
+      "price": 340000
+    }
+  ],
+  "field_confidence": {
+    "doc_type": 0.75,
+    "supplier_name": 1.0,
+    "supplier_bin": 0.7,
+    "doc_number": 0.85,
+    "doc_date": 1.0,
+    "currency": 1.0,
+    "total_amount": 1.0,
+    "vat_amount": 1.0,
+    "line_items": 1.0
+  },
+  "warnings": [
+    "В БИН обнаружены и нормализованы OCR-артефакты ('2l064090Ol80' -> '210640900180')",
+    "Противоречие между типом документа в заголовке («Шот-фактура» -> invoice) и префиксом номера («AKT-09» -> act); тип определён по заголовку",
+    "Указано «НДС не облагается» — сумма НДС отсутствует (null)"
+  ]
+}

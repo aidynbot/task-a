@@ -1,0 +1,16 @@
+INVOICE № INV-2026-089
+Date: 2026-10-22
+
+Supplier: CloudScale Technologies Inc.
+Tax ID / EIN: 84-3920145
+Address: 548 Market St, San Francisco, CA 94104, USA
+
+Bill To: LLP "QazTech Solutions", Astana, Kazakhstan
+
+Description                          Qty    Unit Price (USD)    Amount (USD)
+Dedicated GPU Cluster (A100, 1 mo)     1            2 400.00        2 400.00
+Managed Vector DB Storage (500 GB)     2              150.00          300.00
+
+Subtotal:                                                           2 700.00
+VAT (0% - Export of services):                                          0.00
+Total Due:                                                         $2,700.00 USD

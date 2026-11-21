@@ -1,0 +1,36 @@
+{
+  "doc_type": "invoice",
+  "supplier_name": "CloudScale Technologies Inc.",
+  "supplier_bin": null,
+  "doc_number": "INV-2026-089",
+  "doc_date": "2026-10-22",
+  "currency": "USD",
+  "total_amount": 2700,
+  "vat_amount": 0,
+  "line_items": [
+    {
+      "name": "Dedicated GPU Cluster (A100, 1 mo)",
+      "qty": 1,
+      "price": 2400
+    },
+    {
+      "name": "Managed Vector DB Storage (500 GB)",
+      "qty": 2,
+      "price": 150
+    }
+  ],
+  "field_confidence": {
+    "doc_type": 1.0,
+    "supplier_name": 1.0,
+    "supplier_bin": 1.0,
+    "doc_number": 1.0,
+    "doc_date": 1.0,
+    "currency": 1.0,
+    "total_amount": 1.0,
+    "vat_amount": 1.0,
+    "line_items": 1.0
+  },
+  "warnings": [
+    "Указан иностранный налоговый номер EIN (84-3920145), не являющийся 12-значным БИН РК; поле supplier_bin оставлено null"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+"doc_type": "invoice | commercial_offer | act | unknown",
+"supplier_name": "string | null",
+"supplier_bin": "string (12 цифр) | null",
+"doc_number": "string | null",
+"doc_date": "YYYY-MM-DD | null",
+"currency": "KZT | USD | EUR | null",
+"total_amount": "number | null",
+"vat_amount": "number | null",
+"line_items": [{ "name": "string", "qty": "number | null", "price": "number 
+| null" }],
+"field_confidence": { "supplier_bin": 0.0 },
+"warnings": ["string"]
+}
