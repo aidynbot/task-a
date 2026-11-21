@@ -17,9 +17,12 @@
 
 ```powershell
 py -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 .\.venv\Scripts\Activate.ps1
 make install
 ```
+
+Команда `Set-ExecutionPolicy` действует только в текущем окне PowerShell. Выполните её, если PowerShell блокирует запуск `Activate.ps1`.
 
 `make install` устанавливает зависимости из `requirements.txt` в `.venv`. Makefile выбирает этот интерпретатор на Windows; для другого Python можно передать, например, `make test PYTHON=python`.
 
